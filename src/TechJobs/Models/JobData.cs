@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
 
 namespace TechJobs.Models
 {
-    class JobData
+    internal class JobData
     {
-        static List<Dictionary<string, string>> AllJobs = new List<Dictionary<string, string>>();
-        static bool IsDataLoaded = false;
+        private static List<Dictionary<string, string>> AllJobs = new List<Dictionary<string, string>>();
+        private static bool IsDataLoaded = false;
 
         public static List<Dictionary<string, string>> FindAll()
         {
@@ -20,8 +19,9 @@ namespace TechJobs.Models
 
         /*
          * Returns a list of all values contained in a given column,
-         * without duplicates. 
+         * without duplicates.
          */
+
         public static List<string> FindAll(string column)
         {
             LoadData();
@@ -46,7 +46,8 @@ namespace TechJobs.Models
         /**
          * Search all columns for the given term
          */
-        public static List<Dictionary<string, string>> FindByValue(string value)
+
+        public static List<Dictionary<string, string>> FindByValue(string column, string value)
         {
             // load data, if not already loaded
             LoadData();
@@ -55,17 +56,16 @@ namespace TechJobs.Models
 
             foreach (Dictionary<string, string> row in AllJobs)
             {
-
                 foreach (string key in row.Keys)
                 {
-                    string aValue = row[key];
+                    string aValue = row[key].ToLower();
 
-                    if (aValue.ToLower().Contains(value.ToLower()))
+                    if (aValue.Contains(value.ToLower()))
                     {
                         jobs.Add(row);
 
                         // Finding one field in a job that matches is sufficient
-                        break;
+                        // break;
                     }
                 }
             }
@@ -80,6 +80,7 @@ namespace TechJobs.Models
          * For example, searching for employer "Enterprise" will include results
          * with "Enterprise Holdings, Inc".
          */
+
         public static List<Dictionary<string, string>> FindByColumnAndValue(string column, string value)
         {
             // load data, if not already loaded
@@ -89,9 +90,9 @@ namespace TechJobs.Models
 
             foreach (Dictionary<string, string> row in AllJobs)
             {
-                string aValue = row[column];
+                string aValue = row[column].ToLower();
 
-                if (aValue.ToLower().Contains(value.ToLower()))
+                if (aValue.Contains(value.ToLower()))
                 {
                     jobs.Add(row);
                 }
@@ -103,9 +104,9 @@ namespace TechJobs.Models
         /*
          * Load and parse data from job_data.csv
          */
+
         private static void LoadData()
         {
-
             if (IsDataLoaded)
             {
                 return;
@@ -147,6 +148,7 @@ namespace TechJobs.Models
         /*
          * Parse a single line of a CSV file into a string array
          */
+
         private static string[] CSVRowToStringArray(string row, char fieldSeparator = ',', char stringSeparator = '\"')
         {
             bool isBetweenQuotes = false;
